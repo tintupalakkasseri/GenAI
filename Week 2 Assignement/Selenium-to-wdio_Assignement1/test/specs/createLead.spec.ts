@@ -1,47 +1,34 @@
-/**
- * Test suite to create a lead in the Leaftaps application.
- */
-import { LoginPage } from '../pageobjects/login.page';
-import { CrmSfaPage } from '../pageobjects/crmSFA.page';
-import { CreateLeadPage } from '../pageobjects/createLead.page';
-import { ViewLeadPage } from '../pageobjects/viewLeadPage';
+// test/specs/createlead.spec.ts
+import { expect } from 'chai'
+import LoginPage from '../pageobjects/login.page.js'
+import HomePage from '../pageobjects/home.page.js'
+import CreateLeadPage from '../pageobjects/createLead.page.js'
 
-describe('Create Lead', () => {
-    const loginPage = new LoginPage();
-    const crmSfaPage = new CrmSfaPage();
-    const createLeadPage = new CreateLeadPage();
-    const viewLeadPage = new ViewLeadPage();
-
+describe('Create Lead application', () => {
     it('should create a new lead successfully', async () => {
-        // Step 1) & 2) Launch the browser and load the URL.
-        await loginPage.open();
+        // Step 1: Open login page
+        await LoginPage.open()
 
-        // Step 3) Maximize the chrome browser.
-        await browser.maximizeWindow();
+        // Step 2: Perform login
+        await LoginPage.login('DemoSalesManager', 'crmsfa')
 
-        // Step 4) & 5) Find username and password and type values.
-        // Step 6) Click login button.
-        await loginPage.login('DemoSalesManager', 'crmsfa');
+        // Step 3: Verify title after login
+        let title = await browser.getTitle()
+        console.log(title)
+        expect(title).to.not.be.empty
 
-        // Step 7) Verify the title.
-        const title1 = await viewLeadPage.getPageTitle();
-        console.log('Title after login:', title1);
+        // Step 4: Click CRM/SFA
+        await HomePage.clickCRMSFA()
 
-        // Step 8) Click CRM/SFA link.
-        await crmSfaPage.clickCrmSfa();
+        // Step 5: Navigate to Create Lead
+        await CreateLeadPage.openCreateLeadForm()
 
-        // Step 9) Click Create Lead Link.
-        await createLeadPage.clickCreateLeadLink();
+        // Step 6: Create a new lead
+        await CreateLeadPage.createLead('TestLeaf', 'Babu', 'Manickam')
 
-        // Step 10) to 12 c) Fill the lead form.
-        await createLeadPage.fillCreateLeadForm('TestLeaf', 'Babu', 'Manickam', 'Employee', '9001');
-
-        // Step 13) Click Create Lead Button.
-        await createLeadPage.clickSubmitButton();
-
-        // Step 14) Print the new title.
-        const title2 = await viewLeadPage.getPageTitle();
-        console.log('Title after creating lead:', title2);
-    });
-});
-
+        // Step 7: Verify the new title
+        title = await CreateLeadPage.getPageTitle()
+        console.log(title)
+        expect(title).to.not.be.empty
+    })
+})

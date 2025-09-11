@@ -1,41 +1,44 @@
-import { $ } from '@wdio/globals';
-import Page from './page.js';
+// test/pageobjects/login.page.ts
+import { $ } from '@wdio/globals'
+import Page from './page.js'
 
 /**
- * Sub-page containing selectors and methods for the login page.
+ * Page class containing selectors and methods for login page
  */
 class LoginPage extends Page {
-    /**
-     * Define selectors using getter methods.
-     */
-    public get inputUsername() {
-        return $('#username');
+
+    public get inputUsername () {
+        return $('#username')
     }
-    public get inputPassword() {
-        return $('#password');
+
+    public get inputPassword () {
+        return $('#password')
     }
-    public get btnSubmit() {
-        return $('.decorativeSubmit');
+
+    public get btnLogin () {
+        return $('.decorativeSubmit')
     }
 
     /**
-     * Method to login with username and password.
-     * @param {string} username - The username to use for login.
-     * @param {string} password - The password to use for login.
+     * Method to login with username and password
+     * @param username user name value
+     * @param password password value
      */
-    public async login(username: string, password: string) {
-        await this.inputUsername.setValue(username);
-        await this.inputPassword.setValue(password);
-        await this.btnSubmit.click();
+    public async login (username: string, password: string) {
+        await this.inputUsername.waitForDisplayed({ timeout: 10000 })
+        await this.inputUsername.setValue(username)
+        await this.inputPassword.waitForDisplayed({ timeout: 10000 })
+        await this.inputPassword.setValue(password)
+        await this.btnLogin.waitForClickable({ timeout: 10000 })
+        await this.btnLogin.click()
     }
 
     /**
-     * Method to open the login page.
-     * @returns {Promise<string>} - The URL of the opened page.
+     * overwrite specific options to adapt it to page object
      */
-    public async open() {
-        return super.open('http://leaftaps.com/opentaps');
+    public open () {
+        return super.open('opentaps')
     }
 }
 
-export { LoginPage };
+export default new LoginPage()

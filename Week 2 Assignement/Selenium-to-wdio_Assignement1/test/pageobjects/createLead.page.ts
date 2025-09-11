@@ -1,62 +1,73 @@
-import { $ } from '@wdio/globals';
-import Page from './page.js';
+// test/pageobjects/createlead.page.ts
+import { $, browser } from '@wdio/globals'
+import Page from './page.js'
+
 /**
- * Sub-page containing selectors and methods for the Create Lead page.
+ * Page class containing selectors and methods for Create Lead page
  */
 class CreateLeadPage extends Page {
-    /**
-     * Define selectors using getter methods.
-     */
-    public get linkCreateLead() {
-        return $('=Create Lead');
+
+    public get linkCreateLead () {
+        return $('=Create Lead')
     }
-    public get inputCompanyName() {
-        return $('#createLeadForm_companyName');
+
+    public get inputCompanyName () {
+        return $('#createLeadForm_companyName')
     }
-    public get inputFirstName() {
-        return $('#createLeadForm_firstName');
+
+    public get inputFirstName () {
+        return $('#createLeadForm_firstName')
     }
-    public get inputLastName() {
-        return $('#createLeadForm_lastName');
+
+    public get inputLastName () {
+        return $('#createLeadForm_lastName')
     }
-    public get dropdownSource() {
-        return $('#createLeadForm_dataSourceId');
+
+    public get dropdownSource () {
+        return $('#createLeadForm_dataSourceId')
     }
-    public get dropdownMarketingCampaign() {
-        return $('#createLeadForm_marketingCampaignId');
+
+    public get dropdownMarketing () {
+        return $('#createLeadForm_marketingCampaignId')
     }
-    public get btnSubmit() {
-        return $('[name="submitButton"]');
+
+    public get btnSubmit () {
+        return $('[name="submitButton"]')
     }
 
     /**
-     * Method to click the 'Create Lead' link.
+     * Method to navigate to Create Lead form
      */
-    public async clickCreateLeadLink() {
-        await this.linkCreateLead.click();
+    public async openCreateLeadForm () {
+        await this.linkCreateLead.waitForClickable({ timeout: 10000 })
+        await this.linkCreateLead.click()
     }
 
     /**
-     * Method to fill out the lead creation form.
-     * @param {string} companyName - The company name.
-     * @param {string} firstName - The first name.
-     * @param {string} lastName - The last name.
-     * @param {string} source - The visible text of the source dropdown option.
-     * @param {string} marketingCampaign - The value of the marketing campaign dropdown option.
+     * Method to create a new lead
+     * @param company company name
+     * @param first first name
+     * @param last last name
      */
-    public async fillCreateLeadForm(companyName: string, firstName: string, lastName: string, source: string, marketingCampaign: string) {
-        await this.inputCompanyName.setValue(companyName);
-        await this.inputFirstName.setValue(firstName);
-        await this.inputLastName.setValue(lastName);
-        await this.dropdownSource.selectByVisibleText(source);
-        await this.dropdownMarketingCampaign.selectByAttribute('value', marketingCampaign);
+    public async createLead (company: string, first: string, last: string) {
+        await this.inputCompanyName.waitForDisplayed({ timeout: 10000 })
+        await this.inputCompanyName.setValue(company)
+        await this.inputFirstName.setValue(first)
+        await this.inputLastName.setValue(last)
+
+        await (await this.dropdownSource).selectByVisibleText('Employee')
+        await (await this.dropdownMarketing).selectByAttribute('value', '9001')
+
+        await this.btnSubmit.waitForClickable({ timeout: 10000 })
+        await this.btnSubmit.click()
     }
 
     /**
-     * Method to click the submit button on the create lead page.
+     * Get the current page title
      */
-    public async clickSubmitButton() {
-        await this.btnSubmit.click();
+    public async getPageTitle () {
+        return browser.getTitle()
     }
 }
-export { CreateLeadPage };
+
+export default new CreateLeadPage()
